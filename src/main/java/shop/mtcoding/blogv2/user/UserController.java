@@ -1,5 +1,6 @@
 package shop.mtcoding.blogv2.user;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +39,34 @@ public class UserController {
 
     // @ResponseBody : 데이터를 응답받기 위해서 붙임
     @PostMapping("/login")
-    public @ResponseBody String login(UserRequest.LoginDTO loginDTO){
+    public @ResponseBody String login(UserRequest.LoginDTO loginDTO) {
         User sessionUser = userService.로그인(loginDTO);
-        if(sessionUser == null){
+        if (sessionUser == null) {
             return Script.back("로그인 실패");
         }
-
         session.setAttribute("sessionUser", sessionUser);
         return Script.href("/");
+    }
+
+    @GetMapping("/user/updateForm")
+    public String updateForm(HttpServletRequest request){
+        User sessionUser = (User)session.getAttribute("sessionUser");
+        User user = userService.회원정보보기(sessionUser.getId());
+        request.setAttribute("user", user);
+        return "user/updateForm";
+    }
+
+    @PostMapping("/user/update")
+    public String update(UserRequest.UpdateDTO updateDTO){
+        // 1. 회원수정(서비스)
+        // 2. 세션 동기화
+
+        // 세션을 가지고 온다
+        User sessionUser = (User)session.getAttribute("sessionUser");
+        // 회원 수정이 된 객체를 받는다
+        User user = userService.회원수정(updateDTO, sessionUser.getId());
+        // 수정이 된 객체로 동기화 시켜준다 (로그인했을 때와 회원수정 후 비밀번호가 달라지기 때문에 동기화가 필요하다)
+        session.setAttribute("sessionUser", user);
+        return "redirect:/";
     }
 }
