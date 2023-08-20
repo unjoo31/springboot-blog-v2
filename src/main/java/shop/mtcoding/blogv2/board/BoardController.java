@@ -20,6 +20,22 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
+    @PostMapping("/board/update")
+    public String update(@PathVariable Integer id, BoardRequest.UpdateDTO updateDTO) {
+        // where 데이터, body, session값
+        boardService.게시글수정하기(id, updateDTO);
+        return "redirect:/board/" + id;
+    }
+
+
+    @GetMapping("/board/{id}/updateForm")
+    public String updateForm(@PathVariable Integer id, Model model){
+        Board board = boardService.상세보기(id);
+        model.addAttribute("board", board); // request에 담는거랑 동일하다
+        return "board/updateForm";
+    }
+
+
     @PostMapping("/board/{id}/delete")
     public String delete(@PathVariable Integer id){
         boardService.삭제하기(id);

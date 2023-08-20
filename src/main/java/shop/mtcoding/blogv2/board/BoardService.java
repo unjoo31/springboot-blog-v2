@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import shop.mtcoding.blogv2.board.BoardRequest.UpdateDTO;
 import shop.mtcoding.blogv2.user.User;
 
 // 1. 비지니스 로직 처리(핵신 로직)
@@ -49,4 +51,14 @@ public class BoardService {
     public void 삭제하기(Integer id) {
         boardRepository.deleteById(id);
     }
+
+    @Transactional
+    public void 게시글수정하기(Integer id, UpdateDTO updateDTO) {
+        Optional<Board> boardOP = boardRepository.findById(id);
+        if(boardOP.isPresent()){
+            Board board = boardOP.get();
+            board.setTitle(updateDTO.getTitle());
+            board.setContent(updateDTO.getContent());
+        }
+    } // flush (더티체킹)
 }
