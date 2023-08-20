@@ -37,7 +37,7 @@ public class Board {
 
     // EAGER : 디폴트값, 연관관계 조회함
     // LAZY : 연관관계 조회안함
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user; // 1 + n
 
     @CreationTimestamp // insert할때 자동으로 시간을 넣어줌
