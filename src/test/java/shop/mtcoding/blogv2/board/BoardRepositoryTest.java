@@ -1,6 +1,7 @@
 package shop.mtcoding.blogv2.board;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,19 @@ public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Test
+    public void deleteById_test(){
+        boardRepository.deleteById(1);
+    }
+
+    @Test
+    public void findById_test(){
+        Optional<Board> boardOP = boardRepository.findById(5);
+        if(boardOP.isPresent()){ // Board가 존재한다면
+            System.out.println("테스트 : board가 있습니다.");
+        }
+    }
 
     @Test
     public void findAll_paging_test() throws JsonProcessingException{
