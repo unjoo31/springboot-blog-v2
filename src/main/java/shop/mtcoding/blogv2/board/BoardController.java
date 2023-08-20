@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import shop.mtcoding.blogv2._core.util.Script;
+
 @Controller
 public class BoardController {
 
@@ -27,19 +29,18 @@ public class BoardController {
         return "redirect:/board/" + id;
     }
 
-
     @GetMapping("/board/{id}/updateForm")
-    public String updateForm(@PathVariable Integer id, Model model){
+    public String updateForm(@PathVariable Integer id, Model model) {
         Board board = boardService.상세보기(id);
-        model.addAttribute("board", board); // request에 담는거랑 동일하다
+        model.addAttribute("board", board); // request에 담는 것과 동일
         return "board/updateForm";
     }
 
 
     @PostMapping("/board/{id}/delete")
-    public String delete(@PathVariable Integer id){
+    public @ResponseBody String delete(@PathVariable Integer id){
         boardService.삭제하기(id);
-        return "redirect:/";
+        return Script.href("/");
     }
 
     @GetMapping("/board/{id}")

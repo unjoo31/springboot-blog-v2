@@ -49,16 +49,22 @@ public class BoardService {
 
     @Transactional
     public void 삭제하기(Integer id) {
-        boardRepository.deleteById(id);
+        try {
+            boardRepository.deleteById(6);
+        } catch (Exception e) {
+            throw new RuntimeException("6번은 없어요");
+        }
     }
 
     @Transactional
     public void 게시글수정하기(Integer id, UpdateDTO updateDTO) {
         Optional<Board> boardOP = boardRepository.findById(id);
-        if(boardOP.isPresent()){
+        if (boardOP.isPresent()) {
             Board board = boardOP.get();
             board.setTitle(updateDTO.getTitle());
             board.setContent(updateDTO.getContent());
+        } else {
+            throw new RuntimeException(id + "는 찾을 수 없습니다");
         }
     } // flush (더티체킹)
 }
