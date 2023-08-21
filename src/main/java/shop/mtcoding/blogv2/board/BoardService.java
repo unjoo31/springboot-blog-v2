@@ -24,7 +24,7 @@ public class BoardService {
 
     public Board 상세보기(Integer id) {
         // board 만 가져오면 된다!!
-        Optional<Board> boardOP = boardRepository.findById(id);
+        Optional<Board> boardOP = boardRepository.mFindByIdJoinRepliesInUser(id);
         if (boardOP.isPresent()) {
             return boardOP.get();
         } else {
@@ -50,7 +50,7 @@ public class BoardService {
     @Transactional
     public void 삭제하기(Integer id) {
         try {
-            boardRepository.deleteById(6);
+            boardRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("6번은 없어요");
         }

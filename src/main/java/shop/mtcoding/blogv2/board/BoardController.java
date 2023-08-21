@@ -22,7 +22,10 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
-    @PostMapping("/board/update")
+    @Autowired
+    private BoardRepository boardRepository;
+
+    @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id, BoardRequest.UpdateDTO updateDTO) {
         // where 데이터, body, session값
         boardService.게시글수정하기(id, updateDTO);
@@ -48,6 +51,13 @@ public class BoardController {
         Board board = boardService.상세보기(id);
         model.addAttribute("board", board);
         return "board/detail";
+    }
+
+    // 테스트해보기 (메세지컨버터 작동)
+    @GetMapping("/test/board/{id}")
+    public @ResponseBody Board testDetail(@PathVariable Integer id) {
+        Board board = boardRepository.mFindByIdJoinRepliesInUser(id).get();
+        return board;
     }
 
     // localhost:8080?page=1&kayword=바나나

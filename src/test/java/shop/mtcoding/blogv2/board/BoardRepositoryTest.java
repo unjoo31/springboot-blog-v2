@@ -23,6 +23,26 @@ public class BoardRepositoryTest {
     private BoardRepository boardRepository;
 
     @Test
+    public void mFindByIdJoinRepliesInUser_test(){
+        Board board = boardRepository.mFindByIdJoinRepliesInUser(1).get();
+        System.out.println("board : id : " + board.getId());
+        System.out.println("board : title : " + board.getTitle());
+        System.out.println("board : content : " + board.getContent());
+        System.out.println("board : createdAt : " + board.getCreatedAt());
+        System.out.println("---------------------------");
+        board.getReplies().stream().forEach(r -> {
+            System.out.println("board in replies : id : " + r.getId());
+            System.out.println("board in replies : comment : " + r.getComment());
+            System.out.println("board in replies in user : id : " + r.getUser().getId());
+            System.out.println("board in replies in user : id : " + r.getUser().getUsername());
+        });
+        
+        // LAZY 로딩이 일어남
+        // System.out.println("board in user : id : " + board.getUser().getId());
+        // System.out.println("board in user : id : " + board.getUser().getUsername());
+    }
+
+    @Test
     public void deleteById_test(){
         boardRepository.deleteById(1);
     }
