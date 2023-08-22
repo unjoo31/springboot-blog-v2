@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import shop.mtcoding.blogv2._core.error.ex.MyApiException;
 import shop.mtcoding.blogv2._core.error.ex.MyException;
 import shop.mtcoding.blogv2._core.util.ApiUtil;
 import shop.mtcoding.blogv2._core.util.Script;
@@ -27,6 +28,11 @@ public class UserController {
 
     @GetMapping("/api/check")
     public @ResponseBody ApiUtil<String> check(String username){
+        // 유효성검사
+        if(username.isBlank()){
+            throw new MyApiException("유저네임을 입력하세요.");
+        }
+        
         // 핵심로직
         userService.중복체크(username);
 

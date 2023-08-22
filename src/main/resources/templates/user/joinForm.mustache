@@ -38,13 +38,8 @@
 
     async function check(){
         let username = document.querySelector("#username").value;
-
         let response = await fetch("/api/check?username=" + username);
-        console.log(response);
-        
         let responseBody = await response.json();
-        console.log(responseBody);
-
         let btnJoin = document.querySelector("#btnJoin");
 
         if (responseBody.success) {
