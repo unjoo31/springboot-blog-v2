@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import shop.mtcoding.blogv2._core.error.ex.MyException;
 import shop.mtcoding.blogv2.board.BoardRequest.UpdateDTO;
+import shop.mtcoding.blogv2.reply.Reply;
+import shop.mtcoding.blogv2.reply.ReplyRepository;
 import shop.mtcoding.blogv2.user.User;
 
 // 1. 비지니스 로직 처리(핵신 로직)
@@ -22,6 +24,11 @@ import shop.mtcoding.blogv2.user.User;
 public class BoardService {
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private ReplyRepository replyRepository;
+
+
 
     public Board 상세보기(Integer id) {
         // board 만 가져오면 된다!!
@@ -50,10 +57,15 @@ public class BoardService {
 
     @Transactional
     public void 삭제하기(Integer id) {
+        List<Reply> replies = replyRepository.findByBoardId(id);
+        for (Reply reply : replies) {
+            reply.setBoard(null);
+            replyRepository.save(reply);
+        }
         try {
             boardRepository.deleteById(id);
         } catch (Exception e) {
-            throw new MyException("6번은 없어요");
+            throw new MyException(id+"를 찾을 수 없어요");
         }
     }
 

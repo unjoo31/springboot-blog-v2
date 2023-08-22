@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -53,7 +54,9 @@ public class Board {
     // @OneToMany : 양방향매핑
     // mappedBy = "board" : fk가 아니기 때문에 아니라는 설정이 필요하다 / "board" 는 변수명을 사용한다 / mappedBy를 했기 때문에 읽기 전용으로 바뀐다.
     // @JsonIgnoreProperties : 특정 필드들을 무시하고 무시할 필드들의 이름을 지정하는 데 사용
+    // cascade = CascadeType.ALL : 댓글삭제시 게시글도 함께 삭제됨
     @JsonIgnoreProperties({"board"})
+    //@OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<Reply> replies = new ArrayList<>();
 
