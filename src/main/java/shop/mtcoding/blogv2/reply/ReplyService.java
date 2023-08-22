@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import shop.mtcoding.blogv2._core.error.ex.MyApiException;
 import shop.mtcoding.blogv2.board.Board;
 import shop.mtcoding.blogv2.board.BoardRepository;
 import shop.mtcoding.blogv2.reply.ReplyRequest.SaveDTO;
@@ -32,6 +33,28 @@ public class ReplyService {
         replyRepository.save(reply); // entity : Reply객체
     }
 
+
+    @Transactional
+    public void 댓글삭제(Integer id, Integer sessionUserId) {
+        // 권한체크
+        // 댓글 찾기
+        Optional<Reply> replyOP = replyRepository.findById(id);
+
+        // 댓글이 없으면 예외처리
+        if (replyOP.isEmpty()) {
+            throw new MyApiException("삭제할 댓글이 없습니다");
+        }
+
+        // 댓글이 있으면
+        Reply reply = replyOP.get();
+        if (reply.getUser().getId() != sessionUserId) {
+            throw new MyApiException("해당 댓글을 삭제할 권한이 없습니다");
+        }
+
+        replyRepository.deleteById(id);
+    }
+
+
     @Transactional
     public void 댓글작성(ReplyRequest.SaveDTO saveDTO, int sessionUserId) {
         Reply reply = Reply.builder()
@@ -40,10 +63,5 @@ public class ReplyService {
                 .user(User.builder().id(sessionUserId).build())
                 .build();
         replyRepository.save(reply);
-    }
-
-    @Transactional
-    public void 댓글삭제(Integer id) {
-        replyRepository.deleteById(id);
     }
 }
