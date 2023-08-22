@@ -93,4 +93,6 @@ public class BoardController {
         boardService.글쓰기(saveDTO, 1);
         return "redirect:/";
     }
+
+
 }
