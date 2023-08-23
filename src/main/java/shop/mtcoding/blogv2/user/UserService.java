@@ -21,13 +21,14 @@ import shop.mtcoding.blogv2.user.UserRequest.LoginDTO;
 import shop.mtcoding.blogv2.user.UserRequest.UpdateDTO;
 
 // 핵심로직 처리, 트랜잭션 관리, 예외처리
+// Service는 Repository를 의존한다
 @Service
 public class UserService {
-    // Service는 Repository를 의존한다
-
+    
     @Autowired
     private UserRepository userRepository;
 
+    // 회원가입 중복체크
     public void 중복체크(String username){
         User user = userRepository.findByUsername(username);
 
@@ -36,7 +37,8 @@ public class UserService {
         }
     }
 
-    public String saveImage(MultipartFile imageFile) throws MyException {
+    // 회원가입, 회원정보보기 이미지 저장 함수
+    public String saveImage(MultipartFile imageFile){
         UUID uuid = UUID.randomUUID();
         String fileName = uuid + "_" + imageFile.getOriginalFilename();
         Path filePath = Paths.get(MyPath.IMG_PATH + fileName);
@@ -50,6 +52,7 @@ public class UserService {
         return fileName;
     }
 
+    // 회원가입
     @Transactional
     public void 회원가입(JoinDTO joinDTO) {
         String fileName = saveImage(joinDTO.getPic());
@@ -64,6 +67,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    // 로그인
     public User 로그인(LoginDTO loginDTO) {
         User user = userRepository.findByUsername(loginDTO.getUsername());
 
@@ -81,10 +85,12 @@ public class UserService {
         return user;
     }
 
+    // 회원정보보기
     public User 회원정보보기(Integer id) {
         return userRepository.findById(id).get();
     }
 
+    // 회원수정
     @Transactional
     public User 회원수정(UpdateDTO updateDTO, Integer id) {
 
@@ -97,5 +103,5 @@ public class UserService {
         user.setPicUrl(fileName);
 
         return user;
-    } // 3. flush
+    }   // 3. flush
 }
