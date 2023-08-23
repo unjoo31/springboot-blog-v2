@@ -1,6 +1,10 @@
 package shop.mtcoding.blogv2.user;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import shop.mtcoding.blogv2._core.error.ex.MyApiException;
 import shop.mtcoding.blogv2._core.error.ex.MyException;
+import shop.mtcoding.blogv2._core.vo.MyPath;
 import shop.mtcoding.blogv2.reply.Reply;
 import shop.mtcoding.blogv2.user.UserRequest.JoinDTO;
 import shop.mtcoding.blogv2.user.UserRequest.LoginDTO;
@@ -31,11 +36,28 @@ public class UserService {
 
     @Transactional
     public void 회원가입(JoinDTO joinDTO) {
+
+        // 랜덤한 해시값 만들기
+        UUID uuid = UUID.randomUUID();
+        // 확장자때문에 joinDTO.getPic().getOriginalFilename()뒤에 와야함
+        String fileName = uuid+"_"+joinDTO.getPic().getOriginalFilename();
+        System.out.println("fileName"+fileName);
+        // 프로젝트 실행 파일변경 -> blogv2-1.0.jar
+        // 해당 실행파일 경로에 images 폴더가 필요함
+        // ./ : 나의 서버 현재폴더
+        Path filePath = Paths.get(MyPath.IMG_PATH+fileName);
+        try {
+            Files.write(filePath, joinDTO.getPic().getBytes());
+        } catch (Exception e) {
+            throw new MyException(e.getMessage());
+        }
+
         // UserRepository에서 User객체를 관리하기 때문에 User로 받아야한다
         User user = User.builder()
             .username(joinDTO.getUsername())
             .password(joinDTO.getPassword())
             .email(joinDTO.getEmail())
+            .picUrl(fileName)
             .build();
         userRepository.save(user); // 내부적으로 em.persist가 일어난다
     }

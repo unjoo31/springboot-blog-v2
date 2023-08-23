@@ -38,7 +38,7 @@ public class ReplyController {
         return new ApiUtil<String>(true, "댓글삭제 완료");
     }
 
-    // @RequestBody : JSON데이터를 받는다
+    // @RequestBody : JSON데이터를 받아서 java객체로 매핑해준다
     @PostMapping("/api/reply/save")
     public @ResponseBody ApiUtil<String> save(@RequestBody ReplyRequest.SaveDTO saveDTO){
         // System.out.println("boardId : "+saveDTO.getBoardId());
