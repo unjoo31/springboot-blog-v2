@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import shop.mtcoding.blogv2._core.error.ex.MyApiException;
 import shop.mtcoding.blogv2._core.error.ex.MyException;
+import shop.mtcoding.blogv2._core.util.Function;
 import shop.mtcoding.blogv2._core.vo.MyPath;
 import shop.mtcoding.blogv2.reply.Reply;
 import shop.mtcoding.blogv2.user.UserRequest.JoinDTO;
@@ -28,6 +29,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private Function function;
+
     // 회원가입 중복체크
     public void 중복체크(String username){
         User user = userRepository.findByUsername(username);
@@ -37,25 +41,10 @@ public class UserService {
         }
     }
 
-    // 회원가입, 회원정보보기 이미지 저장 함수
-    public String saveImage(MultipartFile imageFile){
-        UUID uuid = UUID.randomUUID();
-        String fileName = uuid + "_" + imageFile.getOriginalFilename();
-        Path filePath = Paths.get(MyPath.IMG_PATH + fileName);
-
-        try {
-            Files.write(filePath, imageFile.getBytes());
-        } catch (IOException e) {
-            throw new MyException(e.getMessage());
-        }
-
-        return fileName;
-    }
-
     // 회원가입
     @Transactional
     public void 회원가입(JoinDTO joinDTO) {
-        String fileName = saveImage(joinDTO.getPic());
+        String fileName = function.saveImage(joinDTO.getPic());
 
         User user = User.builder()
             .username(joinDTO.getUsername())
@@ -94,7 +83,7 @@ public class UserService {
     @Transactional
     public User 회원수정(UpdateDTO updateDTO, Integer id) {
 
-        String fileName = saveImage(updateDTO.getPic());
+        String fileName = function.saveImage(updateDTO.getPic());
 
         // 1. 조회(영속화)
         User user = userRepository.findById(id).get();
