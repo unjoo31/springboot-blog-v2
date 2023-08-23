@@ -9,6 +9,8 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 // implements WebMvcConfigurer : 기존 web.xml 파일에 오버라이드 된다
 public class WebMvcConfig implements WebMvcConfigurer{
 
+    // 정적 리소스의 핸들링을 구성하기 위한 메서드 오버라이드입니다. 
+    // 이 메서드를 통해 정적 리소스의 요청 경로와 실제 리소스 파일이 위치한 경로, 캐시 설정 등을 정의할 수 있습니다.
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 기존에 하던 일은 그대로 둬야한다

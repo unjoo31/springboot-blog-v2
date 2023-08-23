@@ -1,5 +1,6 @@
 package shop.mtcoding.blogv2.user;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,6 +10,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import shop.mtcoding.blogv2._core.error.ex.MyApiException;
 import shop.mtcoding.blogv2._core.error.ex.MyException;
@@ -34,32 +36,32 @@ public class UserService {
         }
     }
 
-    @Transactional
-    public void 회원가입(JoinDTO joinDTO) {
-
-        // 랜덤한 해시값 만들기
+    public String saveImage(MultipartFile imageFile) throws MyException {
         UUID uuid = UUID.randomUUID();
-        // 확장자때문에 joinDTO.getPic().getOriginalFilename()뒤에 와야함
-        String fileName = uuid+"_"+joinDTO.getPic().getOriginalFilename();
-        System.out.println("fileName"+fileName);
-        // 프로젝트 실행 파일변경 -> blogv2-1.0.jar
-        // 해당 실행파일 경로에 images 폴더가 필요함
-        // ./ : 나의 서버 현재폴더
-        Path filePath = Paths.get(MyPath.IMG_PATH+fileName);
+        String fileName = uuid + "_" + imageFile.getOriginalFilename();
+        Path filePath = Paths.get(MyPath.IMG_PATH + fileName);
+
         try {
-            Files.write(filePath, joinDTO.getPic().getBytes());
-        } catch (Exception e) {
+            Files.write(filePath, imageFile.getBytes());
+        } catch (IOException e) {
             throw new MyException(e.getMessage());
         }
 
-        // UserRepository에서 User객체를 관리하기 때문에 User로 받아야한다
+        return fileName;
+    }
+
+    @Transactional
+    public void 회원가입(JoinDTO joinDTO) {
+        String fileName = saveImage(joinDTO.getPic());
+
         User user = User.builder()
             .username(joinDTO.getUsername())
             .password(joinDTO.getPassword())
             .email(joinDTO.getEmail())
             .picUrl(fileName)
             .build();
-        userRepository.save(user); // 내부적으로 em.persist가 일어난다
+
+        userRepository.save(user);
     }
 
     public User 로그인(LoginDTO loginDTO) {
@@ -86,20 +88,7 @@ public class UserService {
     @Transactional
     public User 회원수정(UpdateDTO updateDTO, Integer id) {
 
-        // 랜덤한 해시값 만들기
-        UUID uuid = UUID.randomUUID();
-        // 확장자때문에 joinDTO.getPic().getOriginalFilename()뒤에 와야함
-        String fileName = uuid+"_"+updateDTO.getPic().getOriginalFilename();
-        System.out.println("fileName"+fileName);
-        // 프로젝트 실행 파일변경 -> blogv2-1.0.jar
-        // 해당 실행파일 경로에 images 폴더가 필요함
-        // ./ : 나의 서버 현재폴더
-        Path filePath = Paths.get(MyPath.IMG_PATH+fileName);
-        try {
-            Files.write(filePath, updateDTO.getPic().getBytes());
-        } catch (Exception e) {
-            throw new MyException(e.getMessage());
-        }
+        String fileName = saveImage(updateDTO.getPic());
 
         // 1. 조회(영속화)
         User user = userRepository.findById(id).get();

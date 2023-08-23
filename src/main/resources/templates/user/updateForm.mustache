@@ -39,18 +39,24 @@
         let f = e1.srcElement.files[0];
 
         // 확장자 거르기
+        // 선택한 파일의 MIME 타입이 "image"로 시작하는지 확인
         if(f.type.match("image.*")){
             alert("이미지를 등록해주세요.")
             return;
         }
 
-        let reader = new FileReader(); // 버퍼만들기 (하드웨어있는 파일을 메모리로 끓어올리기)
+        // 버퍼만들기 (하드웨어있는 파일을 메모리로 끓어올리기)
+        let reader = new FileReader(); // FileReader는 파일의 내용을 비동기적으로 읽어오는 기능을 제공
 
-        // 파일을 읽기전에 onload한다
+        // 파일을 읽기전에 onload
         reader.onload = function(e2){ // 파일이 다 읽어지면 콜백됨 (콜백함수)
+            // HTML 문서 내에서 id가 "preview"인 요소를 선택. 이 요소는 이미지 미리보기를 표시할 img 태그를 의미
             let previewEl = document.querySelector("#preview");
+            // 선택한 이미지 파일의 내용을 미리보기 요소의 src 속성에 설정하여 이미지를 표시
+            // e2.target.result는 FileReader가 읽어온 이미지 데이터 URL을 나타냄
             previewEl.setAttribute("src", e2.target.result);
         }
+        // 선택한 이미지 파일을 데이터 URL 형식으로 읽어옴. 이때 onload 콜백 함수가 호출되며, 파일의 내용을 읽은 후의 작업을 수행
         reader.readAsDataURL(f); // 버퍼로 파일 읽기 onload()
     }
 </script>
