@@ -15,7 +15,7 @@ public class WebMvcConfig implements WebMvcConfigurer{
         WebMvcConfigurer.super.addResourceHandlers(registry);
 
         registry.addResourceHandler("/images/**") // /images/** 라는 경로의 요청이 들어오면
-            .addResourceLocations("file:"+"./images/") // 해당 경로로 가서 찾아라
+            .addResourceLocations("file:"+"./images/") // ./images/ 해당 경로로 가서 찾아라
             .setCachePeriod(10) // 캐시기간 : 10초
             .resourceChain(true)
             .addResolver(new PathResourceResolver());

@@ -85,10 +85,27 @@ public class UserService {
 
     @Transactional
     public User 회원수정(UpdateDTO updateDTO, Integer id) {
+
+        // 랜덤한 해시값 만들기
+        UUID uuid = UUID.randomUUID();
+        // 확장자때문에 joinDTO.getPic().getOriginalFilename()뒤에 와야함
+        String fileName = uuid+"_"+updateDTO.getPic().getOriginalFilename();
+        System.out.println("fileName"+fileName);
+        // 프로젝트 실행 파일변경 -> blogv2-1.0.jar
+        // 해당 실행파일 경로에 images 폴더가 필요함
+        // ./ : 나의 서버 현재폴더
+        Path filePath = Paths.get(MyPath.IMG_PATH+fileName);
+        try {
+            Files.write(filePath, updateDTO.getPic().getBytes());
+        } catch (Exception e) {
+            throw new MyException(e.getMessage());
+        }
+
         // 1. 조회(영속화)
         User user = userRepository.findById(id).get();
         // 2. 변경
         user.setPassword(updateDTO.getPassword());
+        user.setPicUrl(fileName);
 
         return user;
     } // 3. flush

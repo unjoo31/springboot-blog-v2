@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public @ResponseBody String join(UserRequest.JoinDTO joinDTO){
+    public String join(UserRequest.JoinDTO joinDTO){
         System.out.println(joinDTO.getPic().getOriginalFilename());
         System.out.println(joinDTO.getPic().getSize());
         System.out.println(joinDTO.getPic().getContentType());
