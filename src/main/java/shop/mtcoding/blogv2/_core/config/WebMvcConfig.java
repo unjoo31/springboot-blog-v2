@@ -1,9 +1,12 @@
 package shop.mtcoding.blogv2._core.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
+
+import shop.mtcoding.blogv2._core.interceptor.LoginInterceptor;
 
 @Configuration // @Configuration : 설정파일에 붙인다. 
 // implements WebMvcConfigurer : 기존 web.xml 파일에 오버라이드 된다
@@ -22,4 +25,15 @@ public class WebMvcConfig implements WebMvcConfigurer{
             .resourceChain(true)
             .addResolver(new PathResourceResolver());
     }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginInterceptor()) // interceptor 추가
+                .addPathPatterns("/api/**") // 발동 조건
+                .addPathPatterns("/user/update", "/user/updateForm") // 발동 조건
+                .addPathPatterns("/board/**") // 발동 조건
+                .excludePathPatterns("/board/{id:[0-9]+}"); // 발동 제외
+    }
+
+    
 }

@@ -30,7 +30,7 @@ public class MyFilter1 implements Filter {
 
         // 2. 블랙리스트 추방
         // User-Agent 헤더를 확인하여 값에 "Chrome"이 포함되어 있다면, "크롬" 브라우저를 사용한 요청이라고 판단하고 특정 응답을 생성
-        if(req.getHeader("User-Agent").contains("Chrome")){
+        if(req.getHeader("User-Agent").contains("XBox")){
             //resp.setContentType("text/html; charset=utf-8");
             resp.setHeader("Content-Type", "text/html; charset=utf-8");
             PrintWriter out = resp.getWriter();
